@@ -25,6 +25,10 @@
     --font-poppins: 'Poppins', sans-serif;
 }
 
+button:hover {
+    @apply cursor-pointer;
+}
+
 html {
     @apply m-0 p-0 border-none outline-0 text-pretty text-zinc-800 font-poppins;
 }
