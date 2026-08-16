@@ -93,97 +93,37 @@ const recursiveParanthesesCalculation = (displayedText: string): string => {
             dashSolved +
             displayedText.slice(indexClosingParanthesis + 1)
 
-        // recursively process the remaining input
         return recursiveParanthesesCalculation(updatedDisplayedText)
     }
     return displayedText
 }
 
-// as long as there is a multiplication or division sign in the array,
-// this function is calling itself and removes the signs by calculating results step by step
 const recursivePointCalculation = (splitText: string[]): string[] => {
-    if (splitText.length === 1) {
-        return splitText
+    const workingArray = [...splitText]
+
+    const operatorIndex = workingArray.findIndex(
+        (item) => item === 'x' || item === '/'
+    )
+
+    if (operatorIndex === -1) {
+        return workingArray
     }
 
-    const pointSolvedCalculation: string[] = []
-    let prevMultAdded: boolean = false
-    for (let i = 1; i < splitText?.length; i += 2) {
-        if (['x', '/'].includes(splitText[i])) {
-            if (['x', '/'].includes(splitText[i - 2]) && prevMultAdded) {
-                if (['x', '/'].includes(splitText[i + 2])) {
-                    pointSolvedCalculation.push(splitText[i])
-                    prevMultAdded = false
-                } else {
-                    pointSolvedCalculation.push(splitText[i], splitText[i + 1])
-                    prevMultAdded = false
-                }
-            } else if (
-                ['x', '/'].includes(splitText[i - 2]) &&
-                !prevMultAdded
-            ) {
-                pointSolvedCalculation.push(
-                    solvePointCalculation(
-                        splitText[i - 1],
-                        splitText[i],
-                        splitText[i + 1]
-                    )
-                )
+    const valueOne = workingArray[operatorIndex - 1]
+    const algebraicSign = workingArray[operatorIndex]
+    const valueTwo = workingArray[operatorIndex + 1]
 
-                prevMultAdded = true
-            } else {
-                pointSolvedCalculation.push(
-                    solvePointCalculation(
-                        splitText[i - 1],
-                        splitText[i],
-                        splitText[i + 1]
-                    )
-                )
-                prevMultAdded = true
-            }
-        } else if (
-            i === splitText.length - 2 &&
-            ['+', '-'].includes(splitText[i])
-        )
-            if (['x', '/'].includes(splitText[i - 2])) {
-                pointSolvedCalculation.push(splitText[i], splitText[i + 1])
-                prevMultAdded = false
-            } else {
-                pointSolvedCalculation.push(
-                    splitText[i - 1],
-                    splitText[i],
-                    splitText[i + 1]
-                )
-                prevMultAdded = false
-            }
-        else if (['x', '/'].includes(splitText[i - 2])) {
-            pointSolvedCalculation.push(splitText[i])
-            prevMultAdded = false
-        } else {
-            pointSolvedCalculation.push(splitText[i - 1], splitText[i])
-            prevMultAdded = false
-        }
-    }
+    const calculatedValue = solvePointCalculation(
+        valueOne,
+        algebraicSign,
+        valueTwo
+    )
 
-    // anything after + or - is cut off, but only when there is a x or / before the first + or - and if there are at least two x's or /'s
-    let recursiveResult: string[]
-    for (let i = 0; i < pointSolvedCalculation?.length; i++) {
-        if (['x', '/'].includes(pointSolvedCalculation[i])) {
-            recursiveResult = recursivePointCalculation([
-                pointSolvedCalculation[i - 1],
-                pointSolvedCalculation[i],
-                pointSolvedCalculation[i + 1],
-            ])
-            if (recursiveResult) {
-                pointSolvedCalculation.splice(i - 1, 3, recursiveResult[0])
-                i--
-            }
-        }
-    }
-    return pointSolvedCalculation
+    workingArray.splice(operatorIndex - 1, 3, calculatedValue)
+
+    return recursivePointCalculation(workingArray)
 }
 
-// solves point calculations
 const solvePointCalculation = (
     valueOne: string,
     algebraicSign: string,
@@ -197,7 +137,6 @@ const solvePointCalculation = (
     }
 }
 
-// solves dashes only calculations
 const solveDashCalculation = (splitText: string[]): string => {
     if (splitText.length === 1) {
         return splitText[0]
