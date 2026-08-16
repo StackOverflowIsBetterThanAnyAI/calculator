@@ -174,9 +174,10 @@ const recursivePointCalculation = (splitText: string[]): string[] => {
                 pointSolvedCalculation[i],
                 pointSolvedCalculation[i + 1],
             ])
-            recursiveResult &&
+            if (recursiveResult) {
                 pointSolvedCalculation.splice(i - 1, 3, recursiveResult[0])
-            recursiveResult && i--
+                i--
+            }
         }
     }
     return pointSolvedCalculation
