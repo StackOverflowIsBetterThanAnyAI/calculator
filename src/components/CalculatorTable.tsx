@@ -1,10 +1,6 @@
 import { useRef } from 'react'
 import CalculatorButton from './CalculatorButton'
-import {
-    DEFAULT_TEXT,
-    MAX_INPUT_LENGTH,
-    tableCharacters,
-} from '../constants/constants'
+import { tableCharacters } from '../constants/constants'
 import { useDisplayedTextContext } from '../context/DisplayedTextContext'
 import { useResultContext } from '../context/ResultContext'
 import { addArithmeticOperator } from '../helper/addArithmeticOperator'
@@ -12,10 +8,10 @@ import { addParantheses } from '../helper/addParantheses'
 import { allowCommaUsage } from '../helper/allowCommaUsage'
 import { checkForAlgebraicSign } from '../helper/checkForAlgebraicSign'
 import { displayNumberInput } from '../helper/displayNumberInput'
+import { displayText } from '../helper/displayText'
 import { displayResult } from '../helper/displayResult'
 import { useFocusTrap } from '../hooks/useFocusTrap'
 import { useKeyboardInput } from '../hooks/useKeyboardInput'
-import { setDisplayedTextInStorage } from '../utils/setDisplayedTextInStorage'
 
 const CalculatorTable = () => {
     const { displayedText, setDisplayedText } = useDisplayedTextContext()
@@ -61,54 +57,17 @@ const CalculatorTable = () => {
             setResult,
         })
     }
-
-    const handleDisplayText = (buttonText: string | number): void => {
-        if (
-            displayedText?.length > MAX_INPUT_LENGTH &&
-            buttonText !== 'AC' &&
-            buttonText !== 'DEL'
-        ) {
-            return
-        }
-        let updatedText = displayedText
-        if (displayedText === DEFAULT_TEXT) {
-            updatedText = ''
-        }
-        if (typeof buttonText === 'number') {
-            handleDisplayNumberInput(updatedText, buttonText)
-        } else if (buttonText === ',' && allowCommaUsage(updatedText)) {
-            setDisplayedTextInStorage({
-                input: updatedText + buttonText.toString(),
-                setDisplayedText,
-                setResult,
-            })
-        } else if (buttonText === 'AC') {
-            setDisplayedTextInStorage({
-                input: '',
-                setDisplayedText,
-                setResult,
-            })
-        } else if (buttonText === 'DEL') {
-            setDisplayedTextInStorage({
-                input: updatedText?.slice(0, updatedText.length - 1) || '',
-                setDisplayedText,
-                setResult,
-            })
-        } else if (buttonText === '+/-') {
-            handleCheckForAlgebraicSign(updatedText)
-        } else if (['+', '-', '/', 'x'].includes(buttonText)) {
-            setDisplayedTextInStorage({
-                input:
-                    updatedText +
-                    addArithmeticOperator(updatedText, buttonText),
-                setDisplayedText,
-                setResult,
-            })
-        } else if (buttonText === '()') {
-            handleAddParantheses(updatedText)
-        } else if (buttonText === '=') {
-            handleDisplayResult(updatedText)
-        }
+    const handleDisplayText = (buttonText: number | string) => {
+        displayText({
+            buttonText,
+            displayedText,
+            handleAddParantheses,
+            handleCheckForAlgebraicSign,
+            handleDisplayNumberInput,
+            handleDisplayResult,
+            setDisplayedText,
+            setResult,
+        })
     }
 
     useKeyboardInput({
