@@ -23,6 +23,7 @@
 
 @theme {
     --font-poppins: 'Poppins', sans-serif;
+    --breakpoint-xs: 28rem;
 }
 
 button:hover {
