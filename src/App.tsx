@@ -1,14 +1,33 @@
 import { useState } from 'react'
 import CalculatorDisplay from './components/CalculatorDisplay'
-import { ResultContext } from './context/ResultContext'
-import { InputContext } from './context/InputContext'
 import CalculatorTable from './components/CalculatorTable'
+import { InputContext } from './context/InputContext'
+import { ResultContext } from './context/ResultContext'
+import { getItemFromSessionStorage } from './utils/getItemFromSessionStorage'
+import { setItemInSessionStorage } from './utils/setItemInSessionStorage'
 
 const App = () => {
-    const [input, setInput] = useState<string>(
-        'The calculator is waiting for your actions.'
-    )
-    const [result, setResult] = useState<string>('Result: 10')
+    const parsedStorageData = getItemFromSessionStorage()
+
+    const [input, setInput] = useState<string>(() => {
+        const data = parsedStorageData?.input || ''
+        if (data?.length && typeof data === 'string') {
+            return data
+        }
+        setItemInSessionStorage(
+            'input',
+            'The calculator is waiting for your actions.'
+        )
+        return 'The calculator is waiting for your actions.'
+    })
+    const [result, setResult] = useState<string>(() => {
+        const data = parsedStorageData?.result || ''
+        if (data?.length && typeof data === 'string') {
+            return data
+        }
+        setItemInSessionStorage('result', '')
+        return ''
+    })
 
     return (
         <div className="bg-linear-to-b from-gray-800 to-gray-700 min-h-dvh flex justify-center p-4">
