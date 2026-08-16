@@ -26,3 +26,5 @@ export const tableCharacters: TableCharacterProps[] = [
     ['+/-', COLOR_SYMBOLS],
     ['=', COLOR_EQUALS],
 ]
+
+export const MAX_INPUT_LENGTH = 64

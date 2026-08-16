@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { MAX_INPUT_LENGTH } from '../constants/constants'
 
 type useKeyboardInputProps = {
     addArithmeticOperator: (input: string, buttonText: string) => string
@@ -23,8 +24,6 @@ export const useKeyboardInput = ({
     setDisplayedText,
     setResult,
 }: useKeyboardInputProps) => {
-    const MAX_INPUT_LENGTH = 64
-
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (

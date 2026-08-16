@@ -1,6 +1,6 @@
 import { useCallback, useContext, useRef } from 'react'
 import CalculatorButton from './CalculatorButton'
-import { tableCharacters } from '../constants/constants'
+import { MAX_INPUT_LENGTH, tableCharacters } from '../constants/constants'
 import { DisplayedTextContext } from '../context/DisplayedTextContext'
 import { ResultContext } from '../context/ResultContext'
 import { addArithmeticOperator } from '../helper/addArithmeticOperator'
@@ -35,7 +35,6 @@ const CalculatorTable = () => {
     // ref for current set of numbers
     const currentSetOfNumbers = useRef<number>(0)
 
-    // ref for parantheses calculations (left or right parantheses)
     const paranthesesCounter = useRef<{ left: number; right: number }>({
         left: 0,
         right: 0,
@@ -45,7 +44,7 @@ const CalculatorTable = () => {
 
     const handleDisplayText = (buttonText: string | number): void => {
         if (
-            displayedText?.length > 48 &&
+            displayedText?.length > MAX_INPUT_LENGTH &&
             buttonText !== 'AC' &&
             buttonText !== 'DEL'
         ) {
@@ -76,7 +75,9 @@ const CalculatorTable = () => {
         } else if (buttonText === '()') {
             addParantheses(displayedText)
             setResult('')
-        } else if (buttonText === '=') displayResult(displayedText)
+        } else if (buttonText === '=') {
+            displayResult(displayedText)
+        }
     }
 
     const handleNumberInput = useCallback(
@@ -284,7 +285,10 @@ const CalculatorTable = () => {
                 right: calculateRightParantheses(displayedText),
             }
 
-            // removes all arithmetic operators if they are at the end and the space was deleted
+            displayedText = displayedText
+                .replace(/(?<!\d),/g, '0,')
+                .replace(/,$/, '')
+
             switch (displayedText?.slice(displayedText.length - 2)) {
                 case ' +':
                 case ' -':
@@ -294,7 +298,7 @@ const CalculatorTable = () => {
                         displayedText?.slice(0, displayedText?.length - 2) || ''
                     break
             }
-            // removes all arithmetic operators if they are at the
+
             switch (displayedText?.slice(displayedText.length - 3)) {
                 case ' + ':
                 case ' - ':
@@ -340,7 +344,6 @@ const CalculatorTable = () => {
             }
             displayedText = splitText?.join(' ') || ''
 
-            // removes all arithmetic operators if they are at the end
             switch (displayedText?.slice(displayedText.length - 2)) {
                 case ' +':
                 case ' -':
@@ -350,7 +353,7 @@ const CalculatorTable = () => {
                         displayedText?.slice(0, displayedText?.length - 2) || ''
                     break
             }
-            // removes all arithmetic operators if they are at the end and if parantheses are removed
+
             switch (displayedText?.slice(displayedText.length - 3)) {
                 case ' + ':
                 case ' - ':
@@ -370,11 +373,13 @@ const CalculatorTable = () => {
                         const pLeft = (item.match(/\(/g) || []).length
                         const pRight = (item.match(/\)/g) || []).length
 
-                        if (pLeft === pRight && item.indexOf('-') === -1)
-                            return item.replace(/[()]|--/g, '')
-                        return item
+                        return pLeft === pRight && item.indexOf('-') === -1
+                            ? item.replace(/[()]|--/g, '')
+                            : item
                     })
                     .join(' ')
+
+            displayedText = displayedText.replace(/,$/, '')
 
             if (displayedText) {
                 const result = calculateResult(displayedText)
