@@ -47,7 +47,6 @@ export const displayResult = ({
             break
     }
 
-    // adds missing closing parantheses
     for (
         let i = 0;
         i < paranthesesCounter.current.left - paranthesesCounter.current.right;
@@ -56,7 +55,6 @@ export const displayResult = ({
         displayedText += ')'
     }
 
-    // removes unnecessary opening parantheses
     while (displayedText?.charAt(displayedText.length - 1) === '(') {
         displayedText = displayedText.slice(0, displayedText.length - 1)
     }
