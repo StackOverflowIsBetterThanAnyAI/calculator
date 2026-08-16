@@ -1,16 +1,16 @@
 import { useContext } from 'react'
 import BlinkingCaret from './BlinkingCaret'
-import { InputContext } from '../context/InputContext'
+import { DisplayedTextContext } from '../context/DisplayedTextContext'
 import { ResultContext } from '../context/ResultContext'
 
 const CalculatorDisplay = () => {
-    const inputContext = useContext(InputContext)
-    if (!inputContext) {
+    const displayedTextContext = useContext(DisplayedTextContext)
+    if (!displayedTextContext) {
         throw new Error(
-            'CalculatorDisplay must be used within an InputContext.Provider'
+            'CalculatorDisplay must be used within an DisplayedTextContext.Provider'
         )
     }
-    const [input, _setInput] = inputContext
+    const [displayedText, _setDisplayedText] = displayedTextContext
 
     const resultContext = useContext(ResultContext)
     if (!resultContext) {
@@ -23,7 +23,7 @@ const CalculatorDisplay = () => {
     return (
         <div className="text-2xl flex flex-col justify-between bg-slate-700 p-3 h-36 outline-2 outline-zinc-500/50">
             <span>
-                {input}
+                {displayedText}
                 <BlinkingCaret />
             </span>
             <span>{result}</span>

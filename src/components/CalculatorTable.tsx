@@ -1,7 +1,7 @@
 import { useCallback, useContext, useRef } from 'react'
 import CalculatorButton from './CalculatorButton'
 import { tableCharacters } from '../constants/constants'
-import { InputContext } from '../context/InputContext'
+import { DisplayedTextContext } from '../context/DisplayedTextContext'
 import { ResultContext } from '../context/ResultContext'
 import { addArithmeticOperator } from '../helper/addArithmeticOperator'
 import { allowCommaUsage } from '../helper/allowCommaUsage'
@@ -16,13 +16,13 @@ import { useFocusTrap } from '../hooks/useFocusTrap'
 import { useKeyboardInput } from '../hooks/useKeyboardInput'
 
 const CalculatorTable = () => {
-    const inputContext = useContext(InputContext)
-    if (!inputContext) {
+    const displayedTextContext = useContext(DisplayedTextContext)
+    if (!displayedTextContext) {
         throw new Error(
-            'CalculatorTable must be used within an InputContext.Provider'
+            'CalculatorTable must be used within an DisplayedTextContext.Provider'
         )
     }
-    const [displayedText, setInput] = inputContext
+    const [displayedText, setDisplayedText] = displayedTextContext
 
     const resultContext = useContext(ResultContext)
     if (!resultContext) {
@@ -55,19 +55,21 @@ const CalculatorTable = () => {
             handleNumberInput(displayedText, buttonText)
             setResult('')
         } else if (buttonText === ',' && allowCommaUsage(displayedText)) {
-            setInput(displayedText + buttonText.toString())
+            setDisplayedText(displayedText + buttonText.toString())
             setResult('')
         } else if (buttonText === 'AC') {
             setResult('')
-            setInput('')
+            setDisplayedText('')
         } else if (buttonText === 'DEL') {
-            setInput(displayedText?.slice(0, displayedText.length - 1) || '')
+            setDisplayedText(
+                displayedText?.slice(0, displayedText.length - 1) || ''
+            )
             setResult('')
         } else if (buttonText === '+/-') {
             checkForAlgebraicSign(displayedText)
             setResult('')
         } else if (['+', '-', '/', 'x'].includes(buttonText)) {
-            setInput(
+            setDisplayedText(
                 displayedText + addArithmeticOperator(displayedText, buttonText)
             )
             setResult('')
@@ -88,14 +90,14 @@ const CalculatorTable = () => {
             ) {
                 return
             }
-            setInput(
+            setDisplayedText(
                 checkForStartingZero(displayedText) +
                     checkForClosingParanthesis(displayedText) +
                     checkForDeletedSpace(displayedText) +
                     buttonText.toString()
             )
         },
-        [setInput]
+        [setDisplayedText]
     )
 
     // toggles the algebraic sign for the current set of numbers
@@ -144,7 +146,7 @@ const CalculatorTable = () => {
                     .startsWith('(-')
             )
                 // ... set the displayedText to the sets which have not been touched, the persisting parantheses, (- and the actual set of numbers ...
-                setInput(
+                setDisplayedText(
                     `${splicedText} ${splitText
                         ?.toString()
                         .substring(0, paranthesesCounter)}(-${splitText
@@ -167,14 +169,14 @@ const CalculatorTable = () => {
                     .substring(paranthesesCounter - 1)
                     .slice(2)}`
 
-                setInput(
+                setDisplayedText(
                     leftParantheses === rightParantheses
                         ? invertedText.replace(/\)/, '')
                         : invertedText
                 )
             }
         },
-        [setInput]
+        [setDisplayedText]
     )
 
     // whole logic for parantheses
@@ -267,11 +269,11 @@ const CalculatorTable = () => {
                 upcomingSign = ' ('
             }
 
-            setInput(
+            setDisplayedText(
                 `${displayedText || ''}${addMultiplication}${upcomingSign}`
             )
         },
-        [setInput]
+        [setDisplayedText]
     )
 
     // calculates the result
@@ -382,9 +384,9 @@ const CalculatorTable = () => {
                         : `Result: ${calculateResult(displayedText)}`
                 )
             }
-            setInput(displayedText || '')
+            setDisplayedText(displayedText || '')
         },
-        [setInput, setResult]
+        [setDisplayedText, setResult]
     )
 
     useKeyboardInput({
@@ -395,7 +397,7 @@ const CalculatorTable = () => {
         displayResult,
         displayedText,
         handleNumberInput,
-        setInput,
+        setDisplayedText,
         setResult,
     })
 

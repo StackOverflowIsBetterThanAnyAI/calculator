@@ -8,7 +8,7 @@ type useKeyboardInputProps = {
     displayResult: (input: string) => void
     displayedText: string
     handleNumberInput: (input: string, buttonText: number) => void
-    setInput: React.Dispatch<React.SetStateAction<string>>
+    setDisplayedText: React.Dispatch<React.SetStateAction<string>>
     setResult: React.Dispatch<React.SetStateAction<string>>
 }
 
@@ -20,7 +20,7 @@ export const useKeyboardInput = ({
     displayResult,
     displayedText,
     handleNumberInput,
-    setInput,
+    setDisplayedText,
     setResult,
 }: useKeyboardInputProps) => {
     const MAX_INPUT_LENGTH = 64
@@ -43,11 +43,11 @@ export const useKeyboardInput = ({
                 setResult('')
             }
             if (e.key === ',' && allowCommaUsage(displayedText)) {
-                setInput(displayedText + e.key.toString())
+                setDisplayedText(displayedText + e.key.toString())
                 setResult('')
             }
             if (['+', '-', '/', '*', 'x'].includes(e.key)) {
-                setInput(
+                setDisplayedText(
                     displayedText +
                         addArithmeticOperator(
                             displayedText,
@@ -65,14 +65,14 @@ export const useKeyboardInput = ({
                 setResult('')
             }
             if (e.key === 'Backspace') {
-                setInput(
+                setDisplayedText(
                     displayedText?.slice(0, displayedText.length - 1) || ''
                 )
                 setResult('')
             }
             if (e.key === 'Delete') {
                 setResult('')
-                setInput('')
+                setDisplayedText('')
             }
             if (e.key === 'Enter') {
                 e.preventDefault()
@@ -93,7 +93,7 @@ export const useKeyboardInput = ({
         displayResult,
         displayedText,
         handleNumberInput,
-        setInput,
+        setDisplayedText,
         setResult,
     ])
 }

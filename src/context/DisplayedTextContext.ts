@@ -1,5 +1,5 @@
 import { createContext } from 'react'
 
-export const InputContext = createContext<
+export const DisplayedTextContext = createContext<
     [string, React.Dispatch<React.SetStateAction<string>>] | undefined
 >(undefined)
