@@ -1,19 +1,13 @@
 import { useEffect } from 'react'
 
 type useKeyboardInputProps = {
-    addArithmeticOperator: (
-        displayedText: string | null,
-        buttonText: string
-    ) => string
-    addParantheses: (displayedText: string | null) => void
-    allowCommaUsage: (displayedText: string | null) => boolean
-    checkForAlgebraicSign: (displayedText: string | null) => void
-    displayResult: (displayedText: string | null) => void
-    displayedText: string | null
-    handleNumberInput: (
-        displayedText: string | null,
-        buttonText: number
-    ) => void
+    addArithmeticOperator: (input: string, buttonText: string) => string
+    addParantheses: (input: string) => void
+    allowCommaUsage: (input: string) => boolean
+    checkForAlgebraicSign: (input: string) => void
+    displayResult: (input: string) => void
+    displayedText: string
+    handleNumberInput: (input: string, buttonText: number) => void
     setInput: React.Dispatch<React.SetStateAction<string>>
     setResult: React.Dispatch<React.SetStateAction<string>>
 }
@@ -53,15 +47,13 @@ export const useKeyboardInput = ({
                 setResult('')
             }
             if (['+', '-', '/', '*', 'x'].includes(e.key)) {
-                if (displayedText !== null) {
-                    setInput(
-                        displayedText +
-                            addArithmeticOperator(
-                                displayedText,
-                                e.key.replace(/\*/g, 'x')
-                            )
-                    )
-                }
+                setInput(
+                    displayedText +
+                        addArithmeticOperator(
+                            displayedText,
+                            e.key.replace(/\*/g, 'x')
+                        )
+                )
                 setResult('')
             }
             if (e.key === '(' || e.key === ')') {

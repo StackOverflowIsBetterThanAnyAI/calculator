@@ -1,6 +1,6 @@
-export const allowCommaUsage = (displayedText: string | null): boolean => {
+export const allowCommaUsage = (displayedText: string): boolean => {
     // no Comma is allowed in the beginning of a new set of numbers
-    if (!displayedText) {
+    if (!displayedText?.length) {
         return false
     }
 

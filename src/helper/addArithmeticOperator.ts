@@ -1,6 +1,6 @@
 // logic for the four arithmetic operators + - / x
 export const addArithmeticOperator = (
-    displayedText: string | null,
+    displayedText: string,
     buttonText: string
 ): string => {
     const lastCharIsComma: boolean =

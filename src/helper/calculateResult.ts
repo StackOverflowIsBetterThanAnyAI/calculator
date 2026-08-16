@@ -1,5 +1,5 @@
-export const calculateResult = (displayedText: string | null): string => {
-    if (!displayedText) {
+export const calculateResult = (displayedText: string): string => {
+    if (!displayedText?.length) {
         return ''
     }
 
@@ -228,7 +228,7 @@ const solveDashCalculation = (splitText: string[]): string => {
 }
 
 // returns an object which tells you if the input contains parantheses, + or /, and + or -
-const returnCalculationContent = (splitText: string[] | null) => {
+const returnCalculationContent = (splitText: string[]) => {
     return splitText
         ? {
               parantheses: splitText.some((content) => content.includes('(')),

@@ -1,6 +1,6 @@
-export const checkForDeletedSpace = (displayedText: string | null): string => {
+export const checkForDeletedSpace = (displayedText: string): string => {
     if (
-        displayedText &&
+        displayedText?.length &&
         ['+', '-', '/', 'x'].includes(
             displayedText?.charAt(displayedText.length - 1)
         )

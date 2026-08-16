@@ -1,5 +1,5 @@
 // checks if the user is allowed to type '0' or not
-export const checkForStartingZero = (displayedText: string | null): string => {
+export const checkForStartingZero = (displayedText: string): string => {
     const splitDisplayedText: string[] | '' = displayedText
         ? displayedText.split(' ')
         : ''

@@ -1,7 +1,5 @@
-export const calculateLeftParantheses = (
-    displayedText: string | null
-): number => {
-    if (!displayedText) {
+export const calculateLeftParantheses = (displayedText: string): number => {
+    if (!displayedText?.length) {
         return -1
     }
 
