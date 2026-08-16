@@ -21,7 +21,10 @@ const CalculatorDisplay = () => {
     const [result, _setResult] = resultContext
 
     return (
-        <div className="text-2xl flex flex-col justify-between bg-slate-700 p-3 h-36 outline-2 outline-zinc-500/50">
+        <div
+            className="text-2xl flex flex-col justify-between bg-slate-700 p-3 h-36 outline-2 outline-zinc-500/50"
+            data-testid="display"
+        >
             <span>
                 {displayedText}
                 <BlinkingCaret />
