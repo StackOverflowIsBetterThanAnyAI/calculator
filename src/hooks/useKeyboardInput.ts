@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
-import { MAX_INPUT_LENGTH } from '../constants/constants'
+import { DEFAULT_TEXT, MAX_INPUT_LENGTH } from '../constants/constants'
+import { setDisplayedTextInStorage } from '../utils/setDisplayedTextInStorage'
 
 type useKeyboardInputProps = {
     addArithmeticOperator: (input: string, buttonText: string) => string
@@ -33,49 +34,55 @@ export const useKeyboardInput = ({
             ) {
                 return
             }
+            let updatedText = displayedText
+            if (displayedText === DEFAULT_TEXT) {
+                updatedText = ''
+            }
             if (
                 ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'].includes(
                     e.key
                 )
             ) {
-                handleNumberInput(displayedText, parseInt(e.key))
+                handleNumberInput(updatedText, parseInt(e.key))
                 setResult('')
-            }
-            if (e.key === ',' && allowCommaUsage(displayedText)) {
-                setDisplayedText(displayedText + e.key.toString())
-                setResult('')
-            }
-            if (['+', '-', '/', '*', 'x'].includes(e.key)) {
-                setDisplayedText(
-                    displayedText +
+            } else if (e.key === ',' && allowCommaUsage(updatedText)) {
+                setDisplayedTextInStorage({
+                    input: updatedText + e.key.toString(),
+                    setDisplayedText,
+                    setResult,
+                })
+            } else if (['+', '-', '/', '*', 'x'].includes(e.key)) {
+                setDisplayedTextInStorage({
+                    input:
+                        updatedText +
                         addArithmeticOperator(
-                            displayedText,
+                            updatedText,
                             e.key.replace(/\*/g, 'x')
-                        )
-                )
+                        ),
+                    setDisplayedText,
+                    setResult,
+                })
+            } else if (e.key === '(' || e.key === ')') {
+                addParantheses(updatedText)
                 setResult('')
-            }
-            if (e.key === '(' || e.key === ')') {
-                addParantheses(displayedText)
+            } else if (e.key === 'Control') {
+                checkForAlgebraicSign(updatedText)
                 setResult('')
-            }
-            if (e.key === 'Control') {
-                checkForAlgebraicSign(displayedText)
-                setResult('')
-            }
-            if (e.key === 'Backspace') {
-                setDisplayedText(
-                    displayedText?.slice(0, displayedText.length - 1) || ''
-                )
-                setResult('')
-            }
-            if (e.key === 'Delete') {
-                setResult('')
-                setDisplayedText('')
-            }
-            if (e.key === 'Enter') {
+            } else if (e.key === 'Backspace') {
+                setDisplayedTextInStorage({
+                    input: updatedText?.slice(0, updatedText.length - 1) || '',
+                    setDisplayedText,
+                    setResult,
+                })
+            } else if (e.key === 'Delete') {
+                setDisplayedTextInStorage({
+                    input: '',
+                    setDisplayedText,
+                    setResult,
+                })
+            } else if (e.key === 'Enter') {
                 e.preventDefault()
-                displayResult(displayedText)
+                displayResult(updatedText)
             }
         }
 

@@ -1,6 +1,10 @@
 import { useCallback, useContext, useRef } from 'react'
 import CalculatorButton from './CalculatorButton'
-import { MAX_INPUT_LENGTH, tableCharacters } from '../constants/constants'
+import {
+    DEFAULT_TEXT,
+    MAX_INPUT_LENGTH,
+    tableCharacters,
+} from '../constants/constants'
 import { DisplayedTextContext } from '../context/DisplayedTextContext'
 import { ResultContext } from '../context/ResultContext'
 import { addArithmeticOperator } from '../helper/addArithmeticOperator'
@@ -14,6 +18,7 @@ import { checkForStartingZero } from '../helper/checkForStartingZero'
 import { removeSetOfUnusedParantheses } from '../helper/removeSetOfUnusedParantheses'
 import { useFocusTrap } from '../hooks/useFocusTrap'
 import { useKeyboardInput } from '../hooks/useKeyboardInput'
+import { setDisplayedTextInStorage } from '../utils/setDisplayedTextInStorage'
 
 const CalculatorTable = () => {
     const displayedTextContext = useContext(DisplayedTextContext)
@@ -50,33 +55,47 @@ const CalculatorTable = () => {
         ) {
             return
         }
+        let updatedText = displayedText
+        if (displayedText === DEFAULT_TEXT) {
+            updatedText = ''
+        }
         if (typeof buttonText === 'number') {
-            handleNumberInput(displayedText, buttonText)
+            handleNumberInput(updatedText, buttonText)
             setResult('')
-        } else if (buttonText === ',' && allowCommaUsage(displayedText)) {
-            setDisplayedText(displayedText + buttonText.toString())
-            setResult('')
+        } else if (buttonText === ',' && allowCommaUsage(updatedText)) {
+            setDisplayedTextInStorage({
+                input: updatedText + buttonText.toString(),
+                setDisplayedText,
+                setResult,
+            })
         } else if (buttonText === 'AC') {
-            setResult('')
-            setDisplayedText('')
+            setDisplayedTextInStorage({
+                input: '',
+                setDisplayedText,
+                setResult,
+            })
         } else if (buttonText === 'DEL') {
-            setDisplayedText(
-                displayedText?.slice(0, displayedText.length - 1) || ''
-            )
-            setResult('')
+            setDisplayedTextInStorage({
+                input: updatedText?.slice(0, updatedText.length - 1) || '',
+                setDisplayedText,
+                setResult,
+            })
         } else if (buttonText === '+/-') {
-            checkForAlgebraicSign(displayedText)
+            checkForAlgebraicSign(updatedText)
             setResult('')
         } else if (['+', '-', '/', 'x'].includes(buttonText)) {
-            setDisplayedText(
-                displayedText + addArithmeticOperator(displayedText, buttonText)
-            )
-            setResult('')
+            setDisplayedTextInStorage({
+                input:
+                    updatedText +
+                    addArithmeticOperator(updatedText, buttonText),
+                setDisplayedText,
+                setResult,
+            })
         } else if (buttonText === '()') {
-            addParantheses(displayedText)
+            addParantheses(updatedText)
             setResult('')
         } else if (buttonText === '=') {
-            displayResult(displayedText)
+            displayResult(updatedText)
         }
     }
 
@@ -91,12 +110,16 @@ const CalculatorTable = () => {
             ) {
                 return
             }
-            setDisplayedText(
-                checkForStartingZero(displayedText) +
+
+            setDisplayedTextInStorage({
+                input:
+                    checkForStartingZero(displayedText) +
                     checkForClosingParanthesis(displayedText) +
                     checkForDeletedSpace(displayedText) +
-                    buttonText.toString()
-            )
+                    buttonText.toString(),
+                setDisplayedText,
+                setResult,
+            })
         },
         [setDisplayedText]
     )
@@ -147,13 +170,15 @@ const CalculatorTable = () => {
                     .startsWith('(-')
             )
                 // ... set the displayedText to the sets which have not been touched, the persisting parantheses, (- and the actual set of numbers ...
-                setDisplayedText(
-                    `${splicedText} ${splitText
+                setDisplayedTextInStorage({
+                    input: `${splicedText} ${splitText
                         ?.toString()
                         .substring(0, paranthesesCounter)}(-${splitText
                         ?.toString()
-                        .substring(paranthesesCounter)}`
-                )
+                        .substring(paranthesesCounter)}`,
+                    setDisplayedText,
+                    setResult,
+                })
             // ... otherwise set the displayedText to the sets which have not been touched, the persisting parantheses and the current set of numbers,
             // but remove one paranthesis and the negative sign
             // additionally check if the amount of left and right parantheses is the same
@@ -170,17 +195,19 @@ const CalculatorTable = () => {
                     .substring(paranthesesCounter - 1)
                     .slice(2)}`
 
-                setDisplayedText(
-                    leftParantheses === rightParantheses
-                        ? invertedText.replace(/\)/, '')
-                        : invertedText
-                )
+                setDisplayedTextInStorage({
+                    input:
+                        leftParantheses === rightParantheses
+                            ? invertedText.replace(/\)/, '')
+                            : invertedText,
+                    setDisplayedText,
+                    setResult,
+                })
             }
         },
         [setDisplayedText]
     )
 
-    // whole logic for parantheses
     const addParantheses = useCallback(
         (displayedText: string): void => {
             paranthesesCounter.current = {
@@ -270,14 +297,15 @@ const CalculatorTable = () => {
                 upcomingSign = ' ('
             }
 
-            setDisplayedText(
-                `${displayedText || ''}${addMultiplication}${upcomingSign}`
-            )
+            setDisplayedTextInStorage({
+                input: `${displayedText || ''}${addMultiplication}${upcomingSign}`,
+                setDisplayedText,
+                setResult,
+            })
         },
         [setDisplayedText]
     )
 
-    // calculates the result
     const displayResult = useCallback(
         (displayedText: string): void => {
             paranthesesCounter.current = {
@@ -383,13 +411,17 @@ const CalculatorTable = () => {
 
             if (displayedText) {
                 const result = calculateResult(displayedText)
-                setResult(
+                const resultText =
                     isNaN(parseFloat(result)) || /Infinity/g.test(result)
                         ? `Please do not divide by Zero.`
                         : `Result: ${result}`
-                )
+                setDisplayedTextInStorage({
+                    input: displayedText,
+                    result: resultText,
+                    setDisplayedText,
+                    setResult,
+                })
             }
-            setDisplayedText(displayedText || '')
         },
         [setDisplayedText, setResult]
     )

@@ -28,3 +28,5 @@ export const tableCharacters: TableCharacterProps[] = [
 ]
 
 export const MAX_INPUT_LENGTH = 64
+
+export const DEFAULT_TEXT = 'The calculator is waiting for your actions.'

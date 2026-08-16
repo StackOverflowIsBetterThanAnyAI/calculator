@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import CalculatorDisplay from './components/CalculatorDisplay'
 import CalculatorTable from './components/CalculatorTable'
+import { DEFAULT_TEXT } from './constants/constants'
 import { DisplayedTextContext } from './context/DisplayedTextContext'
 import { ResultContext } from './context/ResultContext'
 import { getItemFromSessionStorage } from './utils/getItemFromSessionStorage'
@@ -14,11 +15,8 @@ const App = () => {
         if (data?.length && typeof data === 'string') {
             return data
         }
-        setItemInSessionStorage(
-            'displayedText',
-            'The calculator is waiting for your actions.'
-        )
-        return 'The calculator is waiting for your actions.'
+        setItemInSessionStorage('displayedText', DEFAULT_TEXT)
+        return DEFAULT_TEXT
     })
     const [result, setResult] = useState<string>(() => {
         const data = parsedStorageData?.result || ''
