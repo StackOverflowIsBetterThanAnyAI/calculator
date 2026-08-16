@@ -10,12 +10,11 @@ import { useResultContext } from '../context/ResultContext'
 import { addArithmeticOperator } from '../helper/addArithmeticOperator'
 import { allowCommaUsage } from '../helper/allowCommaUsage'
 import { calculateLeftParantheses } from '../helper/calculateLeftParantheses'
-import { calculateResult } from '../helper/calculateResult'
 import { calculateRightParantheses } from '../helper/calculateRightParantheses'
 import { checkForClosingParanthesis } from '../helper/checkForClosingParanthesis'
 import { checkForDeletedSpace } from '../helper/checkForDeletedSpace'
 import { checkForStartingZero } from '../helper/checkForStartingZero'
-import { removeSetOfUnusedParantheses } from '../helper/removeSetOfUnusedParantheses'
+import { displayResult } from '../helper/displayResult'
 import { useFocusTrap } from '../hooks/useFocusTrap'
 import { useKeyboardInput } from '../hooks/useKeyboardInput'
 import { setDisplayedTextInStorage } from '../utils/setDisplayedTextInStorage'
@@ -33,6 +32,15 @@ const CalculatorTable = () => {
     })
 
     useFocusTrap({ tableCharacters })
+
+    const handleDisplayResult = (input: string) => {
+        displayResult({
+            displayedText: input,
+            paranthesesCounter,
+            setDisplayedText,
+            setResult,
+        })
+    }
 
     const handleDisplayText = (buttonText: string | number): void => {
         if (
@@ -79,7 +87,7 @@ const CalculatorTable = () => {
         } else if (buttonText === '()') {
             addParantheses(updatedText)
         } else if (buttonText === '=') {
-            displayResult(updatedText)
+            handleDisplayResult(updatedText)
         }
     }
 
@@ -290,132 +298,12 @@ const CalculatorTable = () => {
         [setDisplayedText]
     )
 
-    const displayResult = useCallback(
-        (displayedText: string): void => {
-            paranthesesCounter.current = {
-                left: calculateLeftParantheses(displayedText),
-                right: calculateRightParantheses(displayedText),
-            }
-
-            displayedText = displayedText
-                .replace(/(?<!\d),/g, '0,')
-                .replace(/,$/, '')
-
-            switch (displayedText?.slice(displayedText.length - 2)) {
-                case ' +':
-                case ' -':
-                case ' /':
-                case ' x':
-                    displayedText =
-                        displayedText?.slice(0, displayedText?.length - 2) || ''
-                    break
-            }
-
-            switch (displayedText?.slice(displayedText.length - 3)) {
-                case ' + ':
-                case ' - ':
-                case ' / ':
-                case ' x ':
-                    displayedText =
-                        displayedText?.slice(0, displayedText?.length - 3) || ''
-                    break
-            }
-
-            // adds missing closing parantheses
-            for (
-                let i = 0;
-                i <
-                paranthesesCounter.current.left -
-                    paranthesesCounter.current.right;
-                i++
-            ) {
-                displayedText += ')'
-            }
-
-            // removes unnecessary opening parantheses
-            while (displayedText?.charAt(displayedText.length - 1) === '(') {
-                displayedText = displayedText.slice(0, displayedText.length - 1)
-            }
-
-            // removes unnecessary closing paranthesis which could have been left by toggling the algebraic sign
-            if (
-                displayedText?.charAt(displayedText.length - 1) === ')' &&
-                paranthesesCounter.current.right ===
-                    paranthesesCounter.current.left + 1
-            ) {
-                displayedText = displayedText.slice(0, displayedText.length - 1)
-            }
-
-            // create array with set of numbers
-            const splitText: string[] | undefined = displayedText
-                ?.split(' ')
-                .filter((item) => item !== '')
-
-            if (splitText) {
-                removeSetOfUnusedParantheses(splitText)
-            }
-            displayedText = splitText?.join(' ') || ''
-
-            switch (displayedText?.slice(displayedText.length - 2)) {
-                case ' +':
-                case ' -':
-                case ' /':
-                case ' x':
-                    displayedText =
-                        displayedText?.slice(0, displayedText?.length - 2) || ''
-                    break
-            }
-
-            switch (displayedText?.slice(displayedText.length - 3)) {
-                case ' + ':
-                case ' - ':
-                case ' / ':
-                case ' x ':
-                    displayedText =
-                        displayedText?.slice(0, displayedText?.length - 3) || ''
-                    break
-            }
-
-            // check if there are unnecessary parantheses
-            displayedText =
-                displayedText &&
-                displayedText
-                    .split(' ')
-                    .map((item) => {
-                        const pLeft = (item.match(/\(/g) || []).length
-                        const pRight = (item.match(/\)/g) || []).length
-
-                        return pLeft === pRight && item.indexOf('-') === -1
-                            ? item.replace(/[()]|--/g, '')
-                            : item
-                    })
-                    .join(' ')
-
-            displayedText = displayedText.replace(/,$/, '')
-
-            if (displayedText) {
-                const result = calculateResult(displayedText)
-                const resultText =
-                    isNaN(parseFloat(result)) || /Infinity/g.test(result)
-                        ? `Please do not divide by Zero.`
-                        : `Result: ${result}`
-                setDisplayedTextInStorage({
-                    input: displayedText,
-                    result: resultText,
-                    setDisplayedText,
-                    setResult,
-                })
-            }
-        },
-        [setDisplayedText, setResult]
-    )
-
     useKeyboardInput({
         addArithmeticOperator,
         addParantheses,
         allowCommaUsage,
         checkForAlgebraicSign,
-        displayResult,
+        displayResult: handleDisplayResult,
         displayedText,
         handleNumberInput,
         setDisplayedText,
