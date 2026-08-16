@@ -1,24 +1,10 @@
-import { useContext } from 'react'
 import BlinkingCaret from './BlinkingCaret'
-import { DisplayedTextContext } from '../context/DisplayedTextContext'
-import { ResultContext } from '../context/ResultContext'
+import { useDisplayedTextContext } from '../context/DisplayedTextContext'
+import { useResultContext } from '../context/ResultContext'
 
 const CalculatorDisplay = () => {
-    const displayedTextContext = useContext(DisplayedTextContext)
-    if (!displayedTextContext) {
-        throw new Error(
-            'CalculatorDisplay must be used within an DisplayedTextContext.Provider'
-        )
-    }
-    const [displayedText, _setDisplayedText] = displayedTextContext
-
-    const resultContext = useContext(ResultContext)
-    if (!resultContext) {
-        throw new Error(
-            'CalculatorDisplay must be used within a ResultContext.Provider'
-        )
-    }
-    const [result, _setResult] = resultContext
+    const { displayedText } = useDisplayedTextContext()
+    const { result } = useResultContext()
 
     return (
         <div

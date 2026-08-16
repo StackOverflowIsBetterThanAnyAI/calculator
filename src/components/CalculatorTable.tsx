@@ -1,12 +1,12 @@
-import { useCallback, useContext, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 import CalculatorButton from './CalculatorButton'
 import {
     DEFAULT_TEXT,
     MAX_INPUT_LENGTH,
     tableCharacters,
 } from '../constants/constants'
-import { DisplayedTextContext } from '../context/DisplayedTextContext'
-import { ResultContext } from '../context/ResultContext'
+import { useDisplayedTextContext } from '../context/DisplayedTextContext'
+import { useResultContext } from '../context/ResultContext'
 import { addArithmeticOperator } from '../helper/addArithmeticOperator'
 import { allowCommaUsage } from '../helper/allowCommaUsage'
 import { calculateLeftParantheses } from '../helper/calculateLeftParantheses'
@@ -21,21 +21,8 @@ import { useKeyboardInput } from '../hooks/useKeyboardInput'
 import { setDisplayedTextInStorage } from '../utils/setDisplayedTextInStorage'
 
 const CalculatorTable = () => {
-    const displayedTextContext = useContext(DisplayedTextContext)
-    if (!displayedTextContext) {
-        throw new Error(
-            'CalculatorTable must be used within an DisplayedTextContext.Provider'
-        )
-    }
-    const [displayedText, setDisplayedText] = displayedTextContext
-
-    const resultContext = useContext(ResultContext)
-    if (!resultContext) {
-        throw new Error(
-            'CalculatorTable must be used within a ResultContext.Provider'
-        )
-    }
-    const [_result, setResult] = resultContext
+    const { displayedText, setDisplayedText } = useDisplayedTextContext()
+    const { setResult } = useResultContext()
 
     // ref for current set of numbers
     const currentSetOfNumbers = useRef<number>(0)
