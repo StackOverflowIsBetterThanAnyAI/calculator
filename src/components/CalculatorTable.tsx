@@ -97,6 +97,7 @@ const CalculatorTable = () => {
                             .map((item, columnIndex) => (
                                 <td key={columnIndex} className="w-full">
                                     <CalculatorButton
+                                        ariaLabel={item[2]}
                                         bgColor={item[1]}
                                         buttonText={item[0]}
                                         handleClick={() => {
