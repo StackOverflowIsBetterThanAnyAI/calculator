@@ -113,7 +113,7 @@ const CalculatorTable = () => {
                 setResult,
             })
         },
-        [setDisplayedText]
+        [setDisplayedText, setResult]
     )
 
     // toggles the algebraic sign for the current set of numbers
@@ -197,7 +197,7 @@ const CalculatorTable = () => {
                 })
             }
         },
-        [setDisplayedText]
+        [setDisplayedText, setResult]
     )
 
     const addParantheses = useCallback(
@@ -295,7 +295,7 @@ const CalculatorTable = () => {
                 setResult,
             })
         },
-        [setDisplayedText]
+        [setDisplayedText, setResult]
     )
 
     useKeyboardInput({

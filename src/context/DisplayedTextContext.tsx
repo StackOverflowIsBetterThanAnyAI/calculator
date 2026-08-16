@@ -37,6 +37,7 @@ export const DisplayedTextContextProvider = ({
     )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useDisplayedTextContext = () => {
     const context = useContext(DisplayedTextContext)
     if (!context) {

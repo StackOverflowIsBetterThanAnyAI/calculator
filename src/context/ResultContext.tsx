@@ -32,6 +32,7 @@ export const ResultContextProvider = ({
     )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useResultContext = () => {
     const context = useContext(ResultContext)
     if (!context) {
