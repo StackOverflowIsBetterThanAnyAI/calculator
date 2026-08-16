@@ -23,9 +23,7 @@ const CalculatorTable = () => {
     const { displayedText, setDisplayedText } = useDisplayedTextContext()
     const { setResult } = useResultContext()
 
-    // ref for current set of numbers
     const currentSetOfNumbers = useRef<number>(0)
-
     const paranthesesCounter = useRef<{ left: number; right: number }>({
         left: 0,
         right: 0,
@@ -71,7 +69,7 @@ const CalculatorTable = () => {
             updatedText = ''
         }
         if (typeof buttonText === 'number') {
-            handleNumberInput(updatedText, buttonText)
+            displayNumberInput(updatedText, buttonText)
         } else if (buttonText === ',' && allowCommaUsage(updatedText)) {
             setDisplayedTextInStorage({
                 input: updatedText + buttonText.toString(),
@@ -107,7 +105,7 @@ const CalculatorTable = () => {
         }
     }
 
-    const handleNumberInput = useCallback(
+    const displayNumberInput = useCallback(
         (displayedText: string, buttonText: number): void => {
             if (
                 displayedText &&
@@ -137,9 +135,9 @@ const CalculatorTable = () => {
         addParantheses: handleAddParantheses,
         allowCommaUsage,
         checkForAlgebraicSign: handleCheckForAlgebraicSign,
+        displayNumberInput,
         displayResult: handleDisplayResult,
         displayedText,
-        handleNumberInput,
         setDisplayedText,
         setResult,
     })

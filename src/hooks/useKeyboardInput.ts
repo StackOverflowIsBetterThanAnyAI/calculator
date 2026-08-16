@@ -7,9 +7,9 @@ type useKeyboardInputProps = {
     addParantheses: (input: string) => void
     allowCommaUsage: (input: string) => boolean
     checkForAlgebraicSign: (input: string) => void
+    displayNumberInput: (input: string, buttonText: number) => void
     displayResult: (input: string) => void
     displayedText: string
-    handleNumberInput: (input: string, buttonText: number) => void
     setDisplayedText: React.Dispatch<React.SetStateAction<string>>
     setResult: React.Dispatch<React.SetStateAction<string>>
 }
@@ -21,7 +21,7 @@ export const useKeyboardInput = ({
     checkForAlgebraicSign,
     displayResult,
     displayedText,
-    handleNumberInput,
+    displayNumberInput,
     setDisplayedText,
     setResult,
 }: useKeyboardInputProps) => {
@@ -43,7 +43,7 @@ export const useKeyboardInput = ({
                     e.key
                 )
             ) {
-                handleNumberInput(updatedText, parseInt(e.key))
+                displayNumberInput(updatedText, parseInt(e.key))
             } else if (e.key === ',' && allowCommaUsage(updatedText)) {
                 setDisplayedTextInStorage({
                     input: updatedText + e.key.toString(),
@@ -93,9 +93,9 @@ export const useKeyboardInput = ({
         addParantheses,
         allowCommaUsage,
         checkForAlgebraicSign,
+        displayNumberInput,
         displayResult,
         displayedText,
-        handleNumberInput,
         setDisplayedText,
         setResult,
     ])
