@@ -17,9 +17,8 @@ jobs:
             - name: Run Cypress Tests
               uses: cypress-io/github-action@v6
               with:
-                  start: npm start
-                  wait-on: "http://localhost:3000"
-                  browser: chrome
+                  start: npm run dev
+                  wait-on: "http://localhost:5173"
 
             - name: Upload Cypress Artifacts
               if: failure()
