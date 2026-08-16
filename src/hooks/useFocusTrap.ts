@@ -1,7 +1,9 @@
 import { useEffect } from 'react'
 import { type TableCharacterProps } from '../constants/constants'
 
-export const useFocusTrap = (tableCharacters: TableCharacterProps[]) => {
+type useFocusTrapProps = { tableCharacters: TableCharacterProps[] }
+
+export const useFocusTrap = ({ tableCharacters }: useFocusTrapProps) => {
     useEffect(() => {
         const handleFocusTrap = (e: KeyboardEvent) => {
             if (
