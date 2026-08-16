@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useRef } from 'react'
 import CalculatorButton from './CalculatorButton'
 import {
     DEFAULT_TEXT,
@@ -11,9 +11,7 @@ import { addArithmeticOperator } from '../helper/addArithmeticOperator'
 import { addParantheses } from '../helper/addParantheses'
 import { allowCommaUsage } from '../helper/allowCommaUsage'
 import { checkForAlgebraicSign } from '../helper/checkForAlgebraicSign'
-import { checkForClosingParanthesis } from '../helper/checkForClosingParanthesis'
-import { checkForDeletedSpace } from '../helper/checkForDeletedSpace'
-import { checkForStartingZero } from '../helper/checkForStartingZero'
+import { displayNumberInput } from '../helper/displayNumberInput'
 import { displayResult } from '../helper/displayResult'
 import { useFocusTrap } from '../hooks/useFocusTrap'
 import { useKeyboardInput } from '../hooks/useKeyboardInput'
@@ -47,6 +45,14 @@ const CalculatorTable = () => {
             setResult,
         })
     }
+    const handleDisplayNumberInput = (input: string, buttonText: number) => {
+        displayNumberInput({
+            buttonText,
+            displayedText: input,
+            setDisplayedText,
+            setResult,
+        })
+    }
     const handleDisplayResult = (input: string) => {
         displayResult({
             displayedText: input,
@@ -69,7 +75,7 @@ const CalculatorTable = () => {
             updatedText = ''
         }
         if (typeof buttonText === 'number') {
-            displayNumberInput(updatedText, buttonText)
+            handleDisplayNumberInput(updatedText, buttonText)
         } else if (buttonText === ',' && allowCommaUsage(updatedText)) {
             setDisplayedTextInStorage({
                 input: updatedText + buttonText.toString(),
@@ -105,37 +111,12 @@ const CalculatorTable = () => {
         }
     }
 
-    const displayNumberInput = useCallback(
-        (displayedText: string, buttonText: number): void => {
-            if (
-                displayedText &&
-                !isNaN(
-                    parseFloat(displayedText?.charAt(displayedText.length - 2))
-                ) &&
-                displayedText?.charAt(displayedText.length - 1) === ' '
-            ) {
-                return
-            }
-
-            setDisplayedTextInStorage({
-                input:
-                    checkForStartingZero(displayedText) +
-                    checkForClosingParanthesis(displayedText) +
-                    checkForDeletedSpace(displayedText) +
-                    buttonText.toString(),
-                setDisplayedText,
-                setResult,
-            })
-        },
-        [setDisplayedText, setResult]
-    )
-
     useKeyboardInput({
         addArithmeticOperator,
         addParantheses: handleAddParantheses,
         allowCommaUsage,
         checkForAlgebraicSign: handleCheckForAlgebraicSign,
-        displayNumberInput,
+        displayNumberInput: handleDisplayNumberInput,
         displayResult: handleDisplayResult,
         displayedText,
         setDisplayedText,
