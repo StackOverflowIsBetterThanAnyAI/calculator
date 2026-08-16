@@ -377,11 +377,11 @@ const CalculatorTable = () => {
                     .join(' ')
 
             if (displayedText) {
+                const result = calculateResult(displayedText)
                 setResult(
-                    isNaN(parseFloat(calculateResult(displayedText))) ||
-                        /Infinity/g.test(calculateResult(displayedText))
+                    isNaN(parseFloat(result)) || /Infinity/g.test(result)
                         ? `Please do not divide by Zero.`
-                        : `Result: ${calculateResult(displayedText)}`
+                        : `Result: ${result}`
                 )
             }
             setDisplayedText(displayedText || '')
