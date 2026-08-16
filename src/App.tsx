@@ -29,7 +29,7 @@ const App = () => {
 
     return (
         <div className="bg-linear-to-b from-gray-800 to-gray-700 min-h-dvh flex justify-center p-4">
-            <main className="flex flex-col gap-3 max-w-lg w-full h-fit p-3 bg-gray-950/60 drop-shadow-gray-800/70 drop-shadow-xl rounded-b-2xl outline-2 outline-zinc-500/50">
+            <main className="flex flex-col gap-3 max-w-lg w-full h-fit p-3 bg-linear-to-b from-gray-950/30 to-gray-950/70 drop-shadow-gray-800/70 drop-shadow-xl rounded-b-2xl outline-2 outline-zinc-500/50">
                 <DisplayedTextContext.Provider
                     value={[displayedText, setDisplayedText]}
                 >
