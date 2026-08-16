@@ -48,7 +48,6 @@ const CalculatorTable = () => {
         }
         if (typeof buttonText === 'number') {
             handleNumberInput(updatedText, buttonText)
-            setResult('')
         } else if (buttonText === ',' && allowCommaUsage(updatedText)) {
             setDisplayedTextInStorage({
                 input: updatedText + buttonText.toString(),
@@ -69,7 +68,6 @@ const CalculatorTable = () => {
             })
         } else if (buttonText === '+/-') {
             checkForAlgebraicSign(updatedText)
-            setResult('')
         } else if (['+', '-', '/', 'x'].includes(buttonText)) {
             setDisplayedTextInStorage({
                 input:
@@ -80,7 +78,6 @@ const CalculatorTable = () => {
             })
         } else if (buttonText === '()') {
             addParantheses(updatedText)
-            setResult('')
         } else if (buttonText === '=') {
             displayResult(updatedText)
         }

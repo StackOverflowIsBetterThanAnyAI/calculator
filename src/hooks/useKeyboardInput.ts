@@ -44,7 +44,6 @@ export const useKeyboardInput = ({
                 )
             ) {
                 handleNumberInput(updatedText, parseInt(e.key))
-                setResult('')
             } else if (e.key === ',' && allowCommaUsage(updatedText)) {
                 setDisplayedTextInStorage({
                     input: updatedText + e.key.toString(),
@@ -64,10 +63,8 @@ export const useKeyboardInput = ({
                 })
             } else if (e.key === '(' || e.key === ')') {
                 addParantheses(updatedText)
-                setResult('')
             } else if (e.key === 'Control') {
                 checkForAlgebraicSign(updatedText)
-                setResult('')
             } else if (e.key === 'Backspace') {
                 setDisplayedTextInStorage({
                     input: updatedText?.slice(0, updatedText.length - 1) || '',
