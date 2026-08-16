@@ -1,6 +1,6 @@
-const COLOR_NUMBERS: string = 'bg-red-100/60'
-const COLOR_SYMBOLS: string = 'bg-amber-300/50'
-const COLOR_EQUALS: string = 'bg-red-500/60'
+const COLOR_NUMBERS: string = 'bg-blue-700/80'
+const COLOR_SYMBOLS: string = 'bg-indigo-900'
+const COLOR_EQUALS: string = 'bg-indigo-700/20'
 
 export type TableCharacterProps = [string | number, string]
 
