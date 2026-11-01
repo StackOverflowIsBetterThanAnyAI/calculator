@@ -17,14 +17,6 @@ export const calculateResult = (displayedText: string): string => {
     } = returnCalculationContent(splitText)
 
     // then, solve parantheses
-    if (
-        calculationContent.parantheses &&
-        !calculationContent.points &&
-        !calculationContent.dashes
-    ) {
-        return displayedText.replace(/[()]/g, '')
-    }
-
     if (calculationContent.parantheses) {
         displayedText = recursiveParanthesesCalculation(displayedText)
     }

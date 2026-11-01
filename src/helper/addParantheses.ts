@@ -18,6 +18,9 @@ export const addParantheses = ({
     setDisplayedText,
     setResult,
 }: addParanthesesType): void => {
+    // a trailing Comma without decimals is removed before adding a paranthesis
+    displayedText = displayedText?.replace(/,$/, '')
+
     paranthesesCounter.current = {
         left: calculateLeftParantheses(displayedText),
         right: calculateRightParantheses(displayedText),
@@ -65,6 +68,10 @@ export const addParantheses = ({
     }
     // after a left paranthesis there is always another one
     else if (displayedText?.charAt(displayedText.length - 1) === '(') {
+        upcomingSign = '('
+    }
+    // after the negative sign of a toggled set of numbers like '(-' there is always a left paranthesis
+    else if (displayedText?.endsWith('(-')) {
         upcomingSign = '('
     }
     // there is a left paranthesis after an arithmetic operator

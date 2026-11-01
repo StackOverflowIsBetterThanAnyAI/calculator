@@ -7,7 +7,11 @@ export const allowCommaUsage = (displayedText: string): boolean => {
     const splitDisplayedText: string[] = displayedText.split(' ')
     const numberToCheck: number = splitDisplayedText.length - 1
 
-    if (!splitDisplayedText[numberToCheck].length) {
+    // no Comma is allowed right after a closing paranthesis
+    if (
+        !splitDisplayedText[numberToCheck].length ||
+        splitDisplayedText[numberToCheck].endsWith(')')
+    ) {
         return false
     }
     for (let i = 0; i < splitDisplayedText[numberToCheck].length; i++) {
