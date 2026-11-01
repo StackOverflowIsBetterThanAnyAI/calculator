@@ -20,31 +20,19 @@ export const displayResult = ({
     setDisplayedText,
     setResult,
 }: displayResultType): void => {
+    displayedText = displayedText.replace(/(?<!\d),/g, '0,')
+
+    // removes trailing arithmetic operators, commas and left parantheses which are not followed by a number
+    // e.g. '7 x (2 x (' becomes '7 x (2' and '3 + (-' becomes '3'
+    let previousText: string
+    do {
+        previousText = displayedText
+        displayedText = displayedText.replace(/(\s*[+\-/x,]\s*|\()$/, '')
+    } while (displayedText !== previousText)
+
     paranthesesCounter.current = {
         left: calculateLeftParantheses(displayedText),
         right: calculateRightParantheses(displayedText),
-    }
-
-    displayedText = displayedText.replace(/(?<!\d),/g, '0,').replace(/,$/, '')
-
-    switch (displayedText?.slice(displayedText.length - 2)) {
-        case ' +':
-        case ' -':
-        case ' /':
-        case ' x':
-            displayedText =
-                displayedText?.slice(0, displayedText?.length - 2) || ''
-            break
-    }
-
-    switch (displayedText?.slice(displayedText.length - 3)) {
-        case ' + ':
-        case ' - ':
-        case ' / ':
-        case ' x ':
-            displayedText =
-                displayedText?.slice(0, displayedText?.length - 3) || ''
-            break
     }
 
     for (
